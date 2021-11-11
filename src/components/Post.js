@@ -17,7 +17,8 @@ function Post(props) {
         {comments.map((comment, index) => {
           return (
             <Card.Text comment={comment} key={index}>
-              {comment}
+              {comment.author}: {comment.title}
+              {comment.content}
             </Card.Text>
           );
         })}
