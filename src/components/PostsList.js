@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Post from "./Post";
+import axios from "axios";
 
 function PostsList(props) {
   const [postsList, setPostsList] = useState([]);
@@ -9,17 +10,15 @@ function PostsList(props) {
   }, []);
 
   const getPostsData = () => {
-    const url = "http://localhost:4000/api/posts";
-    const options = {
-      method: "GET",
-    };
-
-    fetch(url, options).then((response) => {
-      response.json().then((data) => {
-        console.log(data);
-        setPostsList(data);
+    axios
+      .get("/api/posts")
+      .then((response) => {
+        console.log(response.data);
+        setPostsList(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
   };
 
   return (
