@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
+import axios from "axios";
 
 function Post(props) {
   const [showCommentForm, setShowCommentForm] = useState(false);
@@ -8,40 +9,30 @@ function Post(props) {
 
   let comments = props.item.comments;
 
-  const submitHandler = () => {
-    var headers = {
-      "Content-Type": "application/json",
-      "Access-Control-Origin": "*",
-    };
-
-    var data = {
-      author: commentAuthor,
-      content: commentContent,
-    };
-
+  const submitHandler = (event) => {
+    event.preventDefault();
+    if (!commentAuthor || !commentContent) {
+      alert("Author or Comment can not be empty!");
+      return;
+    }
     var postId = props.item._id;
-
-    var url = `http://localhost:4000/api/posts/${postId}/comments`;
-
-    console.log("url", url);
-
-    fetch(url, {
-      // Adding method type
-      method: "POST",
-
-      // Adding body or contents to send
-      body: JSON.stringify(data),
-
-      // Adding headers to the request
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      // Converting to JSON
-      .then((response) => response.json())
-
-      // Displaying results to console
-      .then((json) => console.log(json));
+    //----------------------------------------------------- use axios
+    axios
+      .post(`/api/posts/${postId}/comments/`, {
+        author: commentAuthor,
+        content: commentContent,
+      })
+      .then(
+        (response) => {
+          setCommentAuthor("");
+          setCommentContent("");
+          setShowCommentForm(!showCommentForm);
+          props.getPostsData();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   };
 
   return (
@@ -65,8 +56,7 @@ function Post(props) {
         })}
         <Button
           variant="primary"
-          className="float-end"
-          className="my-2"
+          className="float-end, my-2"
           onClick={() => {
             setShowCommentForm(!showCommentForm);
           }}
@@ -80,6 +70,7 @@ function Post(props) {
               <Form.Control
                 type="text"
                 placeholder="enter your nickname"
+                value={commentAuthor}
                 onChange={(e) => {
                   setCommentAuthor(e.target.value);
                 }}
@@ -91,6 +82,7 @@ function Post(props) {
               <Form.Control
                 type="text"
                 placeholder="Type your comment"
+                value={commentContent}
                 onChange={(e) => {
                   setCommentContent(e.target.value);
                 }}

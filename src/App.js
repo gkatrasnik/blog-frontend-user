@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import React from "react";
-import { Container, Navbar, Nav, Row, Col, Button } from "react-bootstrap";
+import { Container, Navbar } from "react-bootstrap";
 import PostsList from "./components/PostsList";
 
 function App() {
